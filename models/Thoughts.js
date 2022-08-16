@@ -1,70 +1,70 @@
-const { create } = require('domain');
+// Require Mongoos and Moment
 const { Schema, model, Types } = require('mongoose');
-// const dateFormat = require('../utils/dateFormat');
+const moment = require('moment');
 
+// Reactions
+const ReactionsSchema = new Schema(
+    {
+    // Use Mongoose's ObjectId data type
+    reactionId: {
+        type: Schema.Types.ObjectId,
+        default: ()=> new Types.ObjectId()
+    },
+    reactionBody: {
+        type: String,
+        required: true,
+        maxlength: 280
+    },
+    username: {
+        type: String,
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        get: (createdAtVal) => moment(createdAtVal).format('MMM DD, YYYY [at] hh:mm a')
+    }
+    },
+    {
+    toJSON: {
+        getters: true
+    } 
+    }
+);
+
+// Thoughts
 const ThoughtsSchema = new Schema(
     {
-        thoughtText: {
-            type: String,
-            required: true,
-            minlength: 1,
-            maxlength: 280
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-           // Use a getter method to format the timestamp on query
-            get: createdAtVal => dateFormat(createdAtVal)
-        },
-        username: {
-           // (The user that created this thought)
-            type: String,
-            required: true,
-        },
-        reactions:
-            // (These are like replies)
-            [ReactionSchema]
+    thoughtText: {
+        type: String,
+        required: true,
+        minlength: 1,
+        maxlength: 280
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        // use moment for date
+        get: (createdAtVal) => moment(createdAtVal).format('MMM DD, YYYY [at] hh:mm a')
+    },
+    username: {
+        //(The user that created this thought)
+        type: String,
+        required: true
+    },
+    // (These are like replies)
+    reactions: [ReactionsSchema]
     },
     {
-        toJSON: {
-            virtuals: true,
-            getters: true
-        },
-        id: false
-    }
-);
-
-const ReactionSchema = new Schema(
-    {
-        reactionId: {
-            type: Schema.Types.ObjectId,
-            default: () => new Types.ObjectId()
-        },
-        reactionBody: {
-            type: String,
-            require: true,
-            maxlength: 280
-        },
-        username: {
-            type: String,
-            required: true
-        },
-
-        createdAt: {
-            type: Date,
-            default: Date.now,
-            get: createdAtVal => dateFormat(createdAtVal)
-        }
+    toJSON: {
+        virtuals: true,
+        getters: true
     },
-    {
-        toJSON: {
-            getters: true
-        },
-        id: false
+    id: false
     }
-);
+)
 
-ThoughtsSchema.virtual('reactionCount').get(function () {
+ThoughtsSchema.virtual('reactionCount').get(function() {
     return this.reactions.length;
 });
 
