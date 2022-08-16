@@ -24,3 +24,6 @@ THEN I am able to successfully create and delete reactions to thoughts and add a
 https://github.com/laperzyna/social-api
 
 ## Video
+
+
+https://user-images.githubusercontent.com/90733086/184953119-889dbad0-3156-4e67-90bf-7f726b353163.mp4
